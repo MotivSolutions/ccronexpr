@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+#define CRON_USE_LOCAL_TIME
+
 #ifndef ANDROID
 #include <time.h>
 #else /* ANDROID */
