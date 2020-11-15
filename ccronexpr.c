@@ -69,13 +69,21 @@ static const char* const MONTHS_ARR[] = { "FOO", "JAN", "FEB", "MAR", "APR", "MA
                                 (abs(num) < 100000000 ? 8 : \
                                 (abs(num) < 1000000000 ? 9 : 10)))))))))
 
-#ifndef CRON_TEST_MALLOC
-#define cron_malloc(x) malloc(x);
-#define cron_free(x) free(x);
-#else /* CRON_TEST_MALLOC */
-void* cron_malloc(size_t n);
-void cron_free(void* p);
-#endif /* CRON_TEST_MALLOC */
+#ifdef CRON_FREERTOS_MALLOC
+#include "FreeRTOS.h"
+#define cron_malloc(x) pvPortMalloc(x);
+#define cron_free(x) vPortFree(x);
+#endif
+
+#ifndef CRON_FREERTOS_MALLOC
+	#ifndef CRON_TEST_MALLOC
+	#define cron_malloc(x) malloc(x);
+	#define cron_free(x) free(x);
+	#else /* CRON_TEST_MALLOC */
+	void* cron_malloc(size_t n);
+	void cron_free(void* p);
+	#endif /* CRON_TEST_MALLOC */
+#endif
 
 /**
  * Time functions from standard library.
